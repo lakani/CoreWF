@@ -275,7 +275,34 @@ namespace TestCases.Workflows
             new Action(() => InvokeWorkflow(xaml)).ShouldThrow<InvalidOperationException>().Data.Values.Cast<string>()
                 .ShouldAllBe(error=>error.Contains("error CS0103: The name 'constant' does not exist in the current context"));
         }
+
         [Fact]
+        public void Lakani_Test_CreateActivities()
+        {
+            string xamlString, stFilePath;
+
+            ActivityXamlServicesSettings settings = new ActivityXamlServicesSettings
+            {
+                CompileExpressions = true
+            };
+
+            //String stFilePath = Directory.GetCurrentDirectory();
+            stFilePath = "C:\\Work\\Projects\\TestCoreWF\\WorkflowConsoleApplication1\\Workflow1.xaml";
+
+            xamlString = System.IO.File.ReadAllText(stFilePath);
+
+            var ActivityFromFile = ActivityXamlServices.Load(new StringReader(xamlString), settings);
+            Dictionary<string, object> inputs = new Dictionary<string, object>();
+
+            inputs.Add("x", 50);
+            inputs.Add("Path", "C:\\Work\\BUGS\\INC000000286049_Wrong_Portfolio_Position\\");
+
+            var Ret = System.Activities.WorkflowInvoker.Invoke(ActivityFromFile, inputs);
+
+            System.Console.WriteLine(Ret["Out"]);
+        }
+
+            [Fact]
         public void CSharpInputOutput()
         {
             var xamlString = @"
